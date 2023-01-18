@@ -1,0 +1,722 @@
+<html lang="ua">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="/kino/logo.png" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/kino/logo.png">
+    <meta name="theme-color" content="#000000"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <script src="sw-reg.js"></script>
+    <script src="sw.js"></script>
+    <title>КІНЦО</title>
+    <style>
+        ::-webkit-scrollbar{width: 0px;}
+
+        :root{
+            --white: #fff;
+            --black: #fff;
+            --second: #f2f2f2;
+            --text: #000;
+            --invert: invert(0);
+            --invert2: invert(1);
+            --bg: 0.5;
+        }    
+
+        *{
+            margin: 0; 
+            padding: 0; 
+            font-family: Montserrat Alternates; 
+            font-size: 18px; 
+            user-select: none;
+            color: var(--text);
+           
+        }
+        body{
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        header{
+            padding: 0px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            height: 120px;
+            background: var(--second);
+        }
+        main{
+            padding: 20px;
+            display: flex;
+            flex-direction: column-reverse;
+            justify-content: start;
+            align-items: center;
+            flex: 1;
+            overflow-y: scroll;
+            
+            background: var(--second);
+        }
+        footer{
+            padding: 0 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60px;
+            background: var(--white);
+            box-shadow: 0px 0px 50px 5px rgba(0, 0, 0, 0.2);
+        }
+        header div{
+            width: 320px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        header img{
+            filter: var(--invert);
+        }
+
+        .status{
+            font-weight: 700;
+            font-size: 24px;
+            color:#999;
+        }
+        
+        
+        footer div{
+            display: flex;
+            justify-content: space-around;
+            width: 360px;
+        }
+        footer img{
+            filter: var(--invert);
+        }
+        .film{
+            width: 320px;
+            word-wrap: break-word;
+            word-break:break-all;
+            margin-top: 10px;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            padding-left: 10px;
+            background: var(--white);
+            padding: 10px;
+        }
+        .add, .info, .setting, .edit{
+            display: none;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+        .inp{
+            width: 100%;
+            height: 35px;
+            border-radius: 20px;
+            border: none;
+            padding: 0 10px;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+            background: var(--white);
+        }
+        .menu{
+            display: flex;
+            flex-direction: column;
+            background: var(--second);
+            padding: 20px;
+            border-radius: 20px;
+            width: 320px;
+            z-index: 11;
+        }
+        .add-bttn,
+        .edit-bttn{
+            height: 40px;
+            background: var(--text);
+            color: var(--black);
+            border-radius: 20px;
+            margin-top: 20px;
+            border: none;
+        }
+        .icons{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .icons svg, .icons img{
+            margin-top: 20px;
+            margin-left: 10px;
+            border-radius: 50px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .bg{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            opacity: var(--bg);
+        }
+        .setting input, .setting a{
+            margin: 10px;
+            background: var(--white);
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 20px;
+            text-align: center;
+            padding: 10px 0;
+            text-decoration: none;
+        }
+        .add-prop, .edit-prop{
+            display: flex;
+            gap: 20px;
+        }
+        .info-name{
+            font-weight: 700;
+            font-size: 24px;
+            
+        }
+        .add textarea, .edit textarea{
+            height: 70px;
+            padding: 10px;
+        }
+        .name{
+            font-weight: 700;
+            font-size: 28px;
+        }
+        .option{
+            padding: 20px 0;
+            align-self: flex-end;
+        }
+        .close{
+            align-self: flex-end;
+        }
+        .info p, .info h1{
+            margin: 5px 10px;
+            width: 300px;
+            word-wrap: break-word;
+            user-select: text;
+        }
+        .add-year, .add-genre, .edit-year, .edit-genre{
+            width: 100%;
+        }
+        .add-year select, .add-genre select, .edit-year select, .edit-genre select{
+            background: var(--white);
+        }
+        .add p, .edit p{
+            margin: 10px;  
+        }
+        .info-name img{
+            background: white;
+            border-radius: 50px;
+            margin-left: 10px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+            filter: var(--invert2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="add">
+        <div class="menu">
+            <img class="close" onclick="closeTab('.add')" src="img/close.svg">
+            <div class="add-name">
+                <p>Назва</p>
+                <input class="inp" type="text">
+            </div>
+            <div class="add-prop">
+                <div class="add-year">
+                    <p>Рік</p>
+                    <select class="inp">
+                        <option value=" "></option>
+                    </select>
+                </div>
+                <div class="add-genre">
+                    <p>Жанр</p>
+                    <select class="inp">
+                        <option value=" "></option>
+                        <option value="Фільм">кіно</option>
+                        <option value="Мультфільм">мутьтик</option>
+                        <option value="Серіал">серік</option>
+                        <option value="Аніме">аниме</option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="add-note">
+                <p>Нотатка</p>
+                <textarea class="inp" name="" cols="30" rows="10"></textarea>
+            </div>
+            <input class="add-bttn" type="button" value="Додати">
+        </div>
+        <div class="bg" onclick="closeTab('.add')"></div>
+    </div>
+    
+    <div class="info">
+        <div class="menu">
+            <img class="close" onclick="closeTab('.info')" src="img/close.svg">
+            <h1 class="info-name">error</h1>
+            <p   class="info-prop">error</p>
+            <p   class="info-note">error</p>
+            <div class="icons">
+                <div>
+                    <svg onclick="filter('like')" id="add-like" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
+                        <circle cx="18" cy="18" r="18" fill="white"/>
+                        <path d="M13 11C10.239 11 8 13.1124 8 15.7186C8 17.8225 8.875 22.8157 17.488 27.8632C17.6423 27.9527 17.8194 28 18 28C18.1806 28 18.3577 27.9527 18.512 27.8632C27.125 22.8157 28 17.8225 28 15.7186C28 13.1124 25.761 11 23 11C20.239 11 18 13.8598 18 13.8598C18 13.8598 15.761 11 13 11Z" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <svg onclick="filter('want')" id="add-want" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="18" cy="18" r="18" fill="white"/>
+                        <path d="M20 18C20 19.1046 19.1046 20 18 20C16.8954 20 16 19.1046 16 18C16 16.8954 16.8954 16 18 16C19.1046 16 20 16.8954 20 18Z" stroke="black" stroke-width="4"/>
+                        <path d="M25.6672 12.8016C27.7984 14.1346 29.4337 15.942 30.4214 18C29.4337 20.058 27.7984 21.8654 25.6672 23.1984C23.4359 24.594 20.7716 25.3993 18 25.4991C15.2284 25.3993 12.5641 24.594 10.3328 23.1984C8.20163 21.8654 6.56626 20.058 5.57864 18C6.56626 15.942 8.20163 14.1346 10.3328 12.8016C12.5641 11.406 15.2284 10.6007 18 10.5009C20.7716 10.6007 23.4359 11.406 25.6672 12.8016Z" stroke="black" stroke-width="3"/>
+                    </svg>
+                    <svg onclick="filter('view')" id="add-view" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="18" cy="18" r="18" fill="white"/>
+                        <path d="M8 18.6471L15.907 25L28 13" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                                      
+                </div>
+                <img onclick="remove()" src="img/remove.svg">
+            </div>
+        </div>
+        <div class="bg" onclick="closeTab('.info')"></div>
+    </div>
+
+    <div class="setting">
+        <div class="menu">
+            <img class="close" onclick="closeTab('.setting')" src="img/close.svg">
+            <input type="button" id="anim"  value="Анімація: Викл">
+            <input type="button" id="theme"  value="Тема: Темна">
+            <a id="sdata" download="kinco.txt">Експорт</a>
+            <input type="button" id="clrAll" value="Очистити все">
+        </div>
+        <div class="bg" onclick="closeTab('.setting')"></div>
+    </div>
+
+    <div class="edit">
+        <div class="menu">
+            <img class="close" onclick="closeTab('.edit')" src="img/close.svg">
+            <div class="edit-name">
+                <p>Назва</p>
+                <input class="inp" type="text">
+            </div>
+            <div class="edit-prop">
+                <div class="edit-year">
+                    <p>Рік</p>
+                    <select class="inp">
+                        <option value=" "></option>
+                    </select>
+                </div>
+                <div class="edit-genre">
+                    <p>Жанр</p>
+                    <select class="inp">
+                        <option value=" "></option>
+                        <option value="Фільм">кіно</option>
+                        <option value="Мультфільм">мутьтик</option>
+                        <option value="Серіал">серік</option>
+                        <option value="Аніме">аниме</option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="edit-note">
+                <p>Нотатка</p>
+                <textarea class="inp" name="" cols="30" rows="10"></textarea>
+            </div>
+            <input class="edit-bttn" type="button" value="Змінити">
+        </div>
+        <div class="bg" onclick="closeTab('.edit')"></div>
+    </div>
+    
+    <header>
+        <div>
+            <div></div>
+            <img class="option" onclick="openTab('.setting')" src="img/setting.svg">
+        </div>
+        <div>
+            <img src="img/logo.svg">
+            <p class="status">всі</p>
+        </div>
+    </header>
+    
+    <main></main>
+
+    <footer>
+        <div>
+            <img id="all"  src="img/all.svg ">
+            <img id="like" src="img/like.svg">
+            <img id="add"  src="img/add.svg " onclick="openTab('.add')">
+            <img id="want" src="img/want.svg">
+            <img id="view" src="img/view.svg">
+        </div>
+    </footer>
+
+    <script>
+        
+        num       = Number(localStorage.getItem('num'))
+        ttt       = localStorage.getItem('theme')
+        animTime  = Number(localStorage.getItem('animTime'))
+        curInd    = 0 
+        curYear   = new Date().getFullYear()
+        shortname = ''
+
+
+
+        for (curYear; curYear >= 1895; curYear--) {
+            $('.add-year select, .edit-year select').append('<option value="'+curYear+'">'+curYear+'</option>')
+        }
+
+        if (num == null) { num = 1 }
+
+        if (ttt == null) { ttt = localStorage.setItem('theme', 'dark') }
+
+        if (animTime == null) { animTime = 200 }
+
+        if (animTime == 0) { $('#anim').val('Анімація: Вкл') }
+        else{ $('#anim').val('Анімація: Викл') }
+
+        if(ttt == 'light'){
+            lightTheme()
+        }
+        else if(ttt == 'dark'){
+            darkTheme()
+        }
+        
+
+        $('main').prepend(localStorage.getItem('info'))
+
+        
+
+        $('.add-bttn').click(function(){
+
+            name  = $('.add-name input').val()
+            year  = $('.add-year select').val()
+            genre = $('.add-genre select').val()
+            note  =  $('.add-note textarea').val()
+            
+            if(name.length >= 20){
+                shortname = name.slice(0, 20) + '...'
+            }
+            else{
+                shortname = name
+            }
+
+
+            
+            $('main').append('<p class="film" id="num'+num+'" onclick="openInfo('+num+')">🎬 '+shortname+', '+year+'</p>')
+            
+            $('#num' + num).attr('name',  name)
+            $('#num' + num).attr('year',  year)
+            $('#num' + num).attr('genre', genre)
+            $('#num' + num).attr('note',  note)
+            
+            num++
+            
+            $('.add-name input').val('')
+            $('.add-year select').val(' ')
+            $('.add-genre select').val(' ')
+            $('.add-note textarea').val('')
+            
+            setTimeout(()=>{
+                $('.add').css('display', 'none')
+                localStorage.setItem('info', $('main').html())
+                localStorage.setItem('num', num)
+            }, animTime);
+
+            $('.menu').show(0)
+            $('.menu').hide(animTime)
+        })
+
+        $('.edit-bttn').click(function(){
+
+            name  = $('.edit-name input').val()
+            year  = $('.edit-year select').val()
+            genre = $('.edit-genre select').val()
+            note  = $('.edit-note textarea').val()
+            
+            if(name.length >= 20){
+                shortname = name.slice(0, 20) + '...'
+            }
+            else{
+                shortname = name
+            }
+            
+            $('#num' + curInd).attr('name', name)
+            $('#num' + curInd).attr('year',  year)
+            $('#num' + curInd).attr('genre', genre)
+            $('#num' + curInd).attr('note',  note)
+
+            $('#num' + curInd).text('🎬 '+shortname+', '+year)
+            
+            $('.edit-name input').val(' ')
+            $('.edit-year select').val(' ')
+            $('.edit-genre select').val(' ')
+            $('.edit-note textarea').val(' ')
+            
+            setTimeout(()=>{
+                $('.edit').css('display', 'none')
+                $('.info').css('display', 'none')
+                localStorage.setItem('info', $('main').html())
+                localStorage.setItem('num', num)
+            }, animTime);
+
+            $('.menu').show(0)
+            $('.menu').hide(animTime)
+        })
+
+        
+
+        function closeTab(e){
+            setTimeout(()=>{
+                $(e).css('display', 'none')
+            }, animTime);
+
+            $(e + ' .menu').show(0)
+            $(e + ' .menu').hide(animTime)
+
+            console.log(e)
+        }
+
+        function openTab(e) {
+            $(e).css('display', 'flex')
+            $(e + ' .menu').hide(0)
+            $(e + ' .menu').show(animTime)
+
+            console.log(e)
+        }
+      
+        function openInfo(e){
+            curInd = e
+
+            $('.info').css('display', 'flex')
+            $('.info .menu').hide(0)
+            $('.info .menu').show(animTime)
+
+            name  = $('#num' + e).attr('name')
+            year  = $('#num' + e).attr('year')
+            genre = $('#num' + e).attr('genre')
+            note  = $('#num' + e).attr('note')
+
+            console.log($('.info .menu').children('h1').html(name+'<img onclick="openEdit('+e+')" src="img/edit.svg">'))
+            $(".info-prop").text(genre + year)
+            $(".info-note").text("Нотатка: " + note)
+
+            if ($('#num' + curInd).attr('like') == 'yes') {
+                $('#add-like circle').css('fill', 'red')
+                $('#add-like path').css('stroke', 'white')
+            }
+            else{
+                $('#add-like circle').css('fill', 'white')
+                $('#add-like path').css('stroke', '#333')
+            }
+
+            if ($('#num' + curInd).attr('want') == 'yes') {
+                $('#add-want circle').css('fill', 'orange')
+                $('#add-want path').css('stroke', 'white')
+            }
+            else{
+                $('#add-want circle').css('fill', 'white')
+                $('#add-want path').css('stroke', '#333')
+            }
+
+            if ($('#num' + curInd).attr('view') == 'yes') {
+                $('#add-view circle').css('fill', 'orange')
+                $('#add-view path').css('stroke', 'white')
+            }
+            else{
+                $('#add-view circle').css('fill', 'white')
+                $('#add-view path').css('stroke', '#333')
+            }
+    
+            console.log(curInd)
+        }
+
+        function remove(){
+            $('#num' + curInd).remove()
+
+            setTimeout(()=>{
+                $('.info').css('display', 'none')
+                localStorage.setItem('info', $('main').html())
+            }, animTime);
+
+            $('.menu').show(0)
+            $('.menu').hide(animTime)
+        }
+
+        function filter(e){
+
+            if (e == 'like') {
+                if ($('#num' + curInd).attr(e) == 'yes') {
+                    $('#num' + curInd).removeAttr(e)
+                    $('#add-'+ e +' circle').css('fill', 'white')
+                    $('#add-'+ e +' path').css('stroke', 'black')
+                }
+                else{
+                    $('#num' + curInd).attr(e,'yes')
+                    $('#add-'+ e +' circle').css('fill', 'red')
+                    $('#add-'+ e +' path').css('stroke', 'white')
+                }
+            }
+
+            if (e == 'want') {
+                $('#num' + curInd).attr(e,'yes')
+                $('#num' + curInd).removeAttr('view')
+
+                $('#add-'+ e +' circle').css('fill', 'orange')
+                $('#add-'+ e +' path').css('stroke', 'white')
+
+                $('#add-view circle').css('fill', 'white')
+                $('#add-view path').css('stroke', 'black')
+            }
+            
+            if (e == 'view') {
+                $('#num' + curInd).attr(e,'yes')
+                $('#num' + curInd).removeAttr('want')
+
+                $('#add-'+ e +' circle').css('fill', 'orange')
+                $('#add-'+ e +' path').css('stroke', 'white')
+
+                $('#add-want circle').css('fill', 'white')
+                $('#add-want path').css('stroke', 'black')
+            }
+        }
+
+        function openEdit(e){
+            $('.info').css('display', 'none')
+            $('.edit').css('display', 'flex')
+
+            $('.edit-name input').val($('#num' + curInd).attr('name'))
+            $('.edit-year select').val($('#num' + curInd).attr('year'))
+            $('.edit-genre select').val($('#num' + curInd).attr('genre'))
+            $('.edit-note textarea').val($('#num' + curInd).attr('note'))
+            
+            $('#num' + curInd).attr('note')
+            
+            $('.edit .menu').hide(0)
+            $('.edit .menu').show(animTime)
+        }
+
+
+        
+        $('#all').click(function(){
+            $('.status').text('всі')
+
+            for (let i = 1; i <= num; i++) {
+                $('#num' + i).css('display', 'block')
+                
+            }
+        })
+
+        $('#want').click(function(){
+            $('.status').text('хочу глянути')
+
+            for (let i = 1; i <= num; i++) {
+                if($('#num' + i).attr('want') == 'yes'){
+                    $('#num' + i).css('display', 'block')
+                }
+                else{
+                    $('#num' + i).css('display', 'none')
+                }
+            }
+            
+        })
+
+        $('#like').click(function(){
+            $('.status').text('улюблені')
+
+            for (let i = 1; i <= num; i++) {
+                if($('#num' + i).attr('like') == 'yes'){
+                    $('#num' + i).css('display', 'block')
+                }
+                else{
+                    $('#num' + i).css('display', 'none')
+                }
+            }
+        })
+
+        $('#view').click(function(){
+            $('.status').text('уже бачив')
+
+            for (let i = 1; i <= num; i++) {
+                if($('#num' + i).attr('view') == 'yes'){
+                    $('#num' + i).css('display', 'block')
+                }
+                else{
+                    $('#num' + i).css('display', 'none')
+                }
+            }
+        })
+       
+        
+
+        $('#anim').click(function(){
+            if ($('#anim').val() == 'Анімація: Викл') {
+                $('#anim').val('Анімація: Вкл')
+                animTime  = 0
+                localStorage.setItem('animTime', animTime)
+            }
+            else if ($('#anim').val() == 'Анімація: Вкл') {
+                $('#anim').val('Анімація: Викл')
+                animTime  = 200
+                localStorage.setItem('animTime', animTime)
+            }
+        })
+    
+        $('#theme').click(function (){ 
+            ttt = localStorage.getItem('theme')
+
+            if(ttt == 'light'){
+                localStorage.setItem('theme','dark')
+                darkTheme()
+            }
+            else if(ttt == 'dark'){
+                localStorage.setItem('theme','light')
+                lightTheme()
+            }
+        })
+
+        function darkTheme() {
+            $('body').get(0).style.setProperty("--white",  "#333")
+            $('body').get(0).style.setProperty("--black",  "#000")
+            $('body').get(0).style.setProperty("--second", "#444")
+            $('body').get(0).style.setProperty("--text",   "#fff")
+            $('body').get(0).style.setProperty("--invert", "invert(1)")
+            $('body').get(0).style.setProperty("--invert2","invert(0)")
+            $('body').get(0).style.setProperty("--bg",     "0.8")
+            $('#theme').val('Тема: Світла')
+        }
+        function lightTheme() {
+            $('body').get(0).style.setProperty("--white",  "#fff")
+            $('body').get(0).style.setProperty("--black",  "#fff")
+            $('body').get(0).style.setProperty("--second", "#f2f2f2")
+            $('body').get(0).style.setProperty("--text",   "#000")
+            $('body').get(0).style.setProperty("--invert", "invert(0)")
+            $('body').get(0).style.setProperty("--invert2", "invert(1)")
+            $('body').get(0).style.setProperty("--bg",     "0.5")
+            $('#theme').val('Тема: Темна')
+        }
+
+        $('#sdata').click(function(){
+            const blob = new Blob([$('main').html()], {type:"text/plain"});
+            $('#sdata')[0].href = URL.createObjectURL(blob)
+            console.log($('main').html())
+        })
+
+        // function download(){
+        //     const blob = new Blob([$('main').html()], {type:"text/plain"});
+        //     $('#sdata')[0].href = URL.createObjectURL(blob)
+        //     console.log($('main').html())
+        // }
+        
+        $('#clrAll').click(function(){
+            localStorage.clear()
+            location.reload()
+        })
+
+        // console.log()
+    
+    </script>
+</body>
+</html>
